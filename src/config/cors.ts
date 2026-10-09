@@ -2,7 +2,7 @@
 import cors, { type CorsOptions } from "cors";
 
 const allowedOrigins = (
-  process.env.FRONTEND_URL ?? "http://localhost:5173"
+  process.env.FRONTEND_URL ?? "http://localhost:3001"
 )
   .split(",")
   .map((origin) => origin.trim())
