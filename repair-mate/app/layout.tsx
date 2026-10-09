@@ -25,10 +25,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={barlow.variable}>
-      <body className="font-sans">
+      <body className="flex min-h-screen flex-col font-sans">
         <DirectorySync />
         <Header />
-        <main>{children}</main>
+        <main className="flex flex-1 flex-col">{children}</main>
       </body>
     </html>
   );

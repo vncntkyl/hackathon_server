@@ -23,11 +23,12 @@ export default function Home() {
       <section className="bg-steel-900 text-white">
         <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
           <h1 className="max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Home repair problems? Find the right man for the job.
+            Home repair problems? Find the right pro for the job.
           </h1>
           <p className="mt-4 max-w-xl text-lg text-steel-100">
             repAIrmate connects homeowners with trusted blue collar
-            professionals.
+            professionals to make home repairs simpler, easier, and more
+            accessible.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -59,7 +60,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Trades
       <section className="mx-auto max-w-5xl px-4 pt-10">
         <h2 className="text-2xl font-extrabold">
@@ -78,7 +78,6 @@ export default function Home() {
           ))}
         </ul>
       </section> */}
-
       {/* Sample pros
       <section className="mx-auto max-w-5xl px-4 py-10">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -91,9 +90,8 @@ export default function Home() {
           ))}
         </div>
       </section> */}
-
       {/* How it works */}
-      <section className="border-t border-steel-500/20 bg-white">
+      <section className="flex-1 border-t border-steel-500/20 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-10">
           <h2 className="text-2xl font-extrabold">How it works</h2>
           <ol className="mt-4 grid gap-4 md:grid-cols-3">
