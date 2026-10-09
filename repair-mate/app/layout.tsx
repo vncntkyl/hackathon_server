@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Barlow } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { DirectorySync } from "@/components/directory-sync";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={barlow.variable}>
       <body className="font-sans">
+        <DirectorySync />
         <Header />
         <main>{children}</main>
       </body>
