@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { SAMPLE_PROS, TRADES } from "@/lib/mock";
 import ProCard from "@/components/Procard";
 
 const STEPS = [
   {
     title: "Describe the problem",
-    body: "Tell repAIrMate what's broken in your own words.",
+    body: "Tell repAIrmate what's broken in your own words.",
   },
-  { title: "Get matched", body: "We pick pros in your trade and area." },
+  {
+    title: "Get matched",
+    body: "We pick professionals fit for the job and available around the area.",
+  },
   {
     title: "Call and compare",
     body: "Phone them directly and get a written quote.",
@@ -21,27 +23,27 @@ export default function Home() {
       <section className="bg-steel-900 text-white">
         <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
           <h1 className="max-w-2xl text-4xl font-extrabold leading-tight sm:text-5xl">
-            Something broke. Someone local can fix it.
+            Home repair problems? Find the right man for the job.
           </h1>
           <p className="mt-4 max-w-xl text-lg text-steel-100">
-            repAIrMate connects homeowners with plumbers, electricians,
-            carpenters and other trades nearby.
+            repAIrmate connects homeowners with trusted blue collar
+            professionals.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-hivis p-6 text-steel-900">
               <h2 className="text-2xl font-extrabold">I need a repair</h2>
               <p className="mt-1">
-                Chat about your home problem and get matched with a pro near
-                you.
+                Chat about your home repair request and get matched with a blue
+                collar professional near you.
               </p>
               <Link href="/chat" className="btn-dark mt-5 w-full sm:w-auto">
-                Report a home repair
+                Chat Home Repair Request
               </Link>
             </div>
             <div className="rounded-lg border-2 border-white/30 p-6">
               <h2 className="text-2xl font-extrabold">
-                I&apos;m a tradesperson
+                I&apos;m a Blue Collar Professional
               </h2>
               <p className="mt-1 text-steel-100">
                 List your business for free and let homeowners in your area call
@@ -58,9 +60,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trades */}
+      {/* Trades
       <section className="mx-auto max-w-5xl px-4 pt-10">
-        <h2 className="text-2xl font-extrabold">Trades on repAIrMate</h2>
+        <h2 className="text-2xl font-extrabold">
+          Skills available on repAIrmate
+        </h2>
         <ul className="mt-4 flex flex-wrap gap-2">
           {TRADES.map((t) => (
             <li key={t.id}>
@@ -73,9 +77,9 @@ export default function Home() {
             </li>
           ))}
         </ul>
-      </section>
+      </section> */}
 
-      {/* Sample pros */}
+      {/* Sample pros
       <section className="mx-auto max-w-5xl px-4 py-10">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-2xl font-extrabold">Pros near you</h2>
@@ -86,7 +90,7 @@ export default function Home() {
             <ProCard key={p.id} pro={p} />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* How it works */}
       <section className="border-t border-steel-500/20 bg-white">

@@ -10,6 +10,7 @@ export type Pro = {
   years: number;
   licensed: boolean;
   about: string;
+  rate: string | null; 
 };
 export type ProInput = Omit<Pro, "id" | "createdAt">;
 

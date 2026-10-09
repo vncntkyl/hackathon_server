@@ -23,6 +23,9 @@ export default function ProCard({ pro }: { pro: Pro }) {
       <p className="mt-2 text-sm">
         Serves {pro.area} · {pro.years} yrs experience
       </p>
+      <p className="mt-2 text-base font-extrabold">
+        {pro.rate ?? "Ask for a quote"}
+      </p>
       <p className="mt-2 flex-1 text-sm text-steel-700">{pro.about}</p>
       <a
         href={`tel:${pro.phone.replace(/\s/g, "")}`}

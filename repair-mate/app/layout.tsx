@@ -10,9 +10,9 @@ const barlow = Barlow({
 });
 
 export const metadata: Metadata = {
-  title: "repAIrMate · Find a trusted tradesperson",
+  title: "repAIrMate · Find a trusted Blue Collar Professional",
   description:
-    "Homeowners report repair problems. Blue-collar pros register and get found.",
+    "Homeowners describe repair requests. Blue-collar professionals register and get found.",
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
@@ -27,10 +27,6 @@ export default function RootLayout({
       <body className="font-sans">
         <Header />
         <main>{children}</main>
-        <footer className="mx-auto max-w-5xl px-4 py-8 text-sm text-steel-500">
-          repAIrMate. Always confirm licences and get a written quote before
-          work starts.
-        </footer>
       </body>
     </html>
   );
