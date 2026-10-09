@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UserLocationSchema } from "./location.model.js";
 
 export const RepairAnalysisSchema = z.object({
   trade: z.enum([
@@ -20,6 +21,8 @@ export type RepairAnalysis = z.infer<typeof RepairAnalysisSchema>;
 
 export const AnalyzeRepairRequestSchema = z.object({
   description: z.string().trim().min(1).max(4000),
+  location: UserLocationSchema,
+  conversationId: z.string(),
 });
 
 export type AnalyzeRepairRequest = z.infer<typeof AnalyzeRepairRequestSchema>;

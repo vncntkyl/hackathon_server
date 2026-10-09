@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { analyzeRepairController } from "../controllers/repair.controller.js";
+import {
+  createRepairConversation,
+  startConversation,
+} from "../controllers/repair.controller.js";
 
 const router = Router();
 
-router.post("/analyze", analyzeRepairController);
+router.post("/start", startConversation);
+
+router.post("/chat", createRepairConversation);
 
 export default router;
