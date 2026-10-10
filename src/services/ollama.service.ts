@@ -75,8 +75,7 @@ export async function continueRepairConversation(
       {
         role: "system",
         content: trainMessage({
-          firstName: user.first_name,
-          gender: user.gender,
+          first_name: user.first_name,
         }),
         tool_name: "RepAIrMate",
       },

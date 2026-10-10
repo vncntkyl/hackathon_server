@@ -11,7 +11,7 @@ export const RepairAnalysisSchema = z.object({
     "plumber",
     "electrician",
     "carpenter",
-    "aircon_technician",
+    "painter",
     "appliance_technician",
     "other",
   ]),
@@ -39,8 +39,7 @@ export const RepairConversationSchema = z.object({
 
 export const userRequestSchema = z.object({
   first_name: z.string(),
-  last_name: z.string(),
-  gender: z.string(),
+  last_name: z.string().optional(),
 });
 
 export type UserRequestSchema = z.infer<typeof userRequestSchema>;

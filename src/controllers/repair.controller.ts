@@ -8,7 +8,6 @@ import { randomUUID } from "node:crypto";
 import {
   AnalyzeRepairRequestSchema,
   UserRequestSchema,
-  userRequestSchema,
 } from "../models/conversation.model.js";
 import z from "zod";
 
