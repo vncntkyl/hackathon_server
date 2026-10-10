@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { SubmitEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { TRADES } from "@/lib/mock";
 import RepairReport from "@/components/RepairReport";
+import MatchingProfessionals from "@/components/MatchingProfessionals";
 
 /**
  * Place in app/chat/page.tsx. Uses the existing steel/hivis Tailwind theme,
@@ -37,9 +38,8 @@ type Message = Turn & {
 };
 type UserDetails = {
   first_name: string;
-  last_name: string;
-  gender: string;
-  location: { latitude: number; longitude: number; accuracy: number };
+  last_name?: string;
+  location: string;
   consent: {
     privacyAccepted: true;
     locationAccepted: true;
@@ -57,7 +57,7 @@ const GREETING: Message = {
   id: "welcome",
   role: "assistant",
   content:
-    "Hi! Tell me what needs fixing or improving. I’ll ask a few questions and help you find the right trade for the job.",
+    "Hi! Tell me what needs fixing or improving. I'll ask a few questions and help you find the right worker for the job.",
 };
 const STARTERS = [
   "There’s a leak under my kitchen sink.",
@@ -93,7 +93,6 @@ async function requestAssistant(
       user: {
         first_name: user.first_name,
         last_name: user.last_name,
-        gender: user.gender,
       },
     }),
     signal,
@@ -154,16 +153,16 @@ async function requestAssistant(
 
 export default function ChatPage() {
   const [user, setUser] = useState<UserDetails | null>(null);
-  const [first_name, setfirst_name] = useState("");
-  const [last_name, setlast_name] = useState("");
-  const [gender, setGender] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [locationAccepted, setLocationAccepted] = useState(false);
   const [starting, setStarting] = useState(false);
   const [setupError, setSetupError] = useState("");
   const setupBusy = useRef(false);
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -223,7 +222,11 @@ export default function ChatPage() {
       if (!mounted.current) return;
       conversationId.current = data.conversationId;
       const nextReport = data.isReadyForReport
-        ? { trade: data.trade, assessment: data.assessment, summary: data.message }
+        ? {
+            trade: data.trade,
+            assessment: data.assessment,
+            summary: data.message,
+          }
         : null;
       setMessages((previous) => [
         ...previous.map((message) =>
@@ -289,7 +292,7 @@ export default function ChatPage() {
     void deliver({ id, history, user, conversationId: conversationId.current });
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     send(draft);
   }
@@ -311,13 +314,11 @@ export default function ChatPage() {
     input.current?.focus();
   }
 
-  async function startChat(event: FormEvent<HTMLFormElement>) {
+  async function startChat(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (setupBusy.current || busy.current) return;
     if (
       !first_name.trim() ||
-      !last_name.trim() ||
-      !gender ||
       !description.trim() ||
       description.trim().length > MAX_LENGTH ||
       !privacyAccepted ||
@@ -328,7 +329,7 @@ export default function ChatPage() {
       );
       return;
     }
-    if (!window.isSecureContext || !navigator.geolocation) {
+    if (!window.isSecureContext) {
       setSetupError(
         "Location access requires a supported browser and HTTPS (or localhost).",
       );
@@ -338,25 +339,11 @@ export default function ChatPage() {
     setStarting(true);
     setSetupError("");
     try {
-      const position = await new Promise<GeolocationPosition>(
-        (resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, {
-            enableHighAccuracy: true,
-            timeout: 15_000,
-            maximumAge: 0,
-          });
-        },
-      );
       if (!mounted.current) return;
       const details: UserDetails = {
         first_name: first_name.trim(),
-        last_name: last_name.trim(),
-        gender,
-        location: {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-        },
+        last_name: last_name?.trim(),
+        location: location.trim(),
         consent: {
           privacyAccepted: true,
           locationAccepted: true,
@@ -366,7 +353,8 @@ export default function ChatPage() {
       const content = description.trim();
       const id = crypto.randomUUID();
       setUser(details);
-      setMessages([{ id, role: "user", content, status: "pending" }]);
+
+      setMessages([GREETING, { id, role: "user", content, status: "pending" }]);
       // Pass details directly: React's state update is asynchronous.
       await deliver({
         id,
@@ -382,7 +370,7 @@ export default function ChatPage() {
           ? "Location permission was denied. Allow location in your browser settings, then try again."
           : code === 3
             ? "Location access timed out. Please try again."
-            : "Couldn’t determine your location. Check your device’s location settings and try again.",
+            : "Couldn’t determine your location. Check your device's location settings and try again.",
       );
     } finally {
       setupBusy.current = false;
@@ -419,37 +407,32 @@ export default function ChatPage() {
                   maxLength={100}
                   autoComplete="given-name"
                   value={first_name}
-                  onChange={(e) => setfirst_name(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="field mt-1 w-full"
                 />
               </label>
               <label className="block text-sm font-semibold">
-                Last name
+                Last name (optional)
                 <input
-                  required
                   maxLength={100}
                   autoComplete="family-name"
                   value={last_name}
-                  onChange={(e) => setlast_name(e.target.value)}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="field mt-1 w-full"
                 />
               </label>
             </div>
             <label className="block text-sm font-semibold">
-              Gender
-              <select
+              City (We will use this to display available workers in your area)
+              <input
+                maxLength={100}
+                autoComplete="address"
+                value={location}
                 required
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
+                placeholder="Ex: Makati City | Manila | Quezon City"
+                onChange={(e) => setLocation(e.target.value)}
                 className="field mt-1 w-full"
-              >
-                <option value="">Select an option</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="non_binary">Non-binary</option>
-                <option value="self_described">Another gender</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
-              </select>
+              />
             </label>
             <label className="block text-sm font-semibold">
               What needs fixing?
@@ -466,10 +449,9 @@ export default function ChatPage() {
             <div className="rounded-lg border border-steel-500/30 bg-hivis/20 p-4">
               <h2 className="font-bold">Data and location consent</h2>
               <p className="mt-2 text-sm text-steel-700">
-                Your name, gender selection, job description, chat messages, and
-                device location will be sent to our service and AI processing
-                API to prepare your repair request and support location-based
-                trade matching.
+                Your name, chat messages, and device location will be sent to
+                our service and AI processing API to prepare your repair request
+                and support location-based trade matching.
               </p>
               {/* Link the application's actual privacy notice here before production. */}
               <label className="mt-4 flex items-start gap-3 text-sm">
@@ -506,8 +488,6 @@ export default function ChatPage() {
               type="submit"
               disabled={
                 !first_name.trim() ||
-                !last_name.trim() ||
-                !gender ||
                 !description.trim() ||
                 !privacyAccepted ||
                 !locationAccepted
@@ -541,7 +521,9 @@ export default function ChatPage() {
     <div className="mx-auto max-w-5xl px-4 py-8 text-steel-900">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold">Let&apos;s prepare your repair report</h1>
+          <h1 className="text-3xl font-extrabold">
+            Let&apos;s prepare your repair report
+          </h1>
           <p className="mt-1 text-steel-700">
             Describe the job. <strong>repAIrmate</strong> will help you work out
             who you need.
@@ -591,12 +573,12 @@ export default function ChatPage() {
               aria-hidden="true"
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-hivis/20 text-sm font-extrabold"
             >
-              AI
+              RM
             </span>
             <div>
-              <h2 className="font-bold">Your job assistant</h2>
+              <h2 className="font-bold">repAIrmate</h2>
               <p className="text-xs text-steel-500">
-                A little guidance before you hire.
+                Let me help with your repair needs.
               </p>
             </div>
           </div>
@@ -633,7 +615,7 @@ export default function ChatPage() {
                       <p
                         className={`mb-1 text-xs font-semibold text-steel-500 ${message.role === "user" ? "text-right" : ""}`}
                       >
-                        {message.role === "user" ? "You" : "AI assistant"}
+                        {message.role === "user" ? "You" : "repAIrmate"}
                       </p>
                       <div
                         className={`whitespace-pre-wrap wrap-break-word rounded-lg px-4 py-3 text-sm leading-relaxed ${message.role === "user" ? "bg-steel-900 text-white" : "border border-steel-500/20 bg-steel-500/5 text-steel-900"}`}
@@ -790,7 +772,7 @@ export default function ChatPage() {
 
         <aside
           className="min-w-0 lg:sticky lg:top-6"
-          aria-label="Repair report and matching professionals"
+          aria-label="Repair report"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -804,15 +786,14 @@ export default function ChatPage() {
               {report ? (
                 <RepairReport
                   assessment={report.assessment}
-                  summary={report.summary}
                   tradeKey={matchingTrades(report.trade)[0]?.id ?? report.trade}
                 />
               ) : (
                 <>
                   <h2 className="text-lg font-bold">Your repair report</h2>
                   <p className="mt-2 text-sm text-steel-700">
-                    Tell the assistant what needs fixing. Your report and matching
-                    professionals will appear here once the assessment is ready.
+                    Tell the assistant what needs fixing. Your report will
+                    appear here once the assessment is ready.
                   </p>
                 </>
               )}
@@ -833,14 +814,16 @@ export default function ChatPage() {
               </ul>
             </div>
           )}
-          <Link
-            href="/"
-            className="mt-4 inline-block text-sm font-semibold underline"
-          >
-            Browse all professionals
-          </Link>
         </aside>
       </div>
+      {report && (
+        <MatchingProfessionals
+          report={report}
+          location={user.location}
+          key={matchingTrades(report.trade)[0]?.id ?? report.trade ?? "unknown"}
+          tradeKey={matchingTrades(report.trade)[0]?.id ?? report.trade}
+        />
+      )}
     </div>
   );
 }

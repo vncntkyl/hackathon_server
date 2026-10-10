@@ -71,8 +71,8 @@ export async function GET() {
       rateUnit: pro.rateUnit,
       updatedAt: pro.updatedAt.toISOString(),
 
+      phone: pro.phone ? pro.phone : null,
       // Include contact details only with explicit consent.
-    //   phone: pro.publicContact ? pro.phone : null,
     //   altPhone: pro.publicContact ? pro.altPhone : null,
     //   messenger: pro.publicContact ? pro.messenger : null,
 
