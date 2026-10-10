@@ -1,0 +1,20 @@
+
+import type {
+  Request,
+  Response,
+  NextFunction,
+} from "express";
+
+export function errorMiddleware(
+  error: unknown,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+): void {
+  console.error("API error:", error);
+
+  res.status(500).json({
+    success: false,
+    message: "Something went wrong while processing your request.",
+  });
+}
