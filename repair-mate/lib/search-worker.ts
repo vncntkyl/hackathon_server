@@ -1,5 +1,6 @@
 
 import { db } from "@/lib/offline-db";
+import { servesCity } from "@/lib/location";
 
 export async function searchPros(options: {
   trade: string;
@@ -7,7 +8,6 @@ export async function searchPros(options: {
   budget?: number;
 }) {
   const trade = options.trade.trim().toLowerCase();
-  const area = options.area.trim().toLowerCase();
 
   // The trade index narrows the initial query.
   const candidates = await db.workers
@@ -17,7 +17,7 @@ export async function searchPros(options: {
 
   return candidates
     .filter((pro) => {
-      if (pro.area.trim().toLowerCase() !== area) {
+      if (!servesCity(pro.area, options.area)) {
         return false;
       }
 

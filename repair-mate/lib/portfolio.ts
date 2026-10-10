@@ -1,3 +1,5 @@
+import { formatPHP } from "./currency";
+
 export type Kind = "business" | "individual";
 
 export type DaySchedule = {
@@ -118,8 +120,8 @@ export function formatRate(
 ): string | null {
   if (!min || !unit) return null;
   const label = RATE_UNITS.find((u) => u.id === unit)?.label ?? "";
-  if (max && max > min) return `${peso(min)}–${peso(max)} ${label}`;
-  return `From ${peso(min)} ${label}`;
+  if (max && max > min) return `${formatPHP(min)}–${formatPHP(max)} ${label}`;
+  return `From ${formatPHP(min)} ${label}`;
 }
 
 // Groups consecutive open days with identical hours: "Mon–Fri · 8:00 AM–5:00 PM"
