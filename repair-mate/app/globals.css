@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-steel-900: #1c242c;
+  --color-steel-700: #2e3a45;
+  --color-steel-500: #5c6b78;
+  --color-steel-100: #e9edf0;
+  --color-hivis: #f4c20d;
+  --color-hivis-dark: #c99d00;
+  --color-paper: #f6f5f1;
+  --font-sans: var(--font-barlow), system-ui, sans-serif;
+}
+
+@layer base {
+  body { @apply bg-paper text-steel-900 antialiased; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-steel-900; }
+}
+
+@layer components {
+  .field { @apply w-full rounded-md border border-steel-500/40 bg-white px-3 py-2.5 text-base focus:border-steel-900; }
+  .btn { @apply inline-flex items-center justify-center rounded-md bg-hivis px-5 py-3 font-bold text-steel-900 transition hover:bg-hivis-dark disabled:opacity-50; }
+  .btn-dark { @apply inline-flex items-center justify-center rounded-md bg-steel-900 px-5 py-3 font-bold text-white transition hover:bg-steel-700; }
+  .field { @apply w-full rounded-md border border-steel-500/40 bg-white px-3 py-2.5 text-base focus:border-steel-900 disabled:bg-steel-100 disabled:text-steel-500; }
+  .btn-outline { @apply inline-flex items-center justify-center rounded-md border-2 border-steel-900 px-5 py-3 font-bold text-steel-900 transition hover:bg-steel-100; }
+}

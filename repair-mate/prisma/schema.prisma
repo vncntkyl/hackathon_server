@@ -1,0 +1,83 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../app/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum ProKind {
+    BUSINESS
+    INDIVIDUAL
+}
+
+enum LicenseType {
+    TESDA
+    PRC
+    DTI
+    PERMIT
+    OTHER
+}
+
+enum RateUnit {
+    HOUR
+    DAY
+    JOB
+}
+
+model Pro {
+    id              String  @id @default(cuid())
+    kind            ProKind
+    businessName    String? // business only
+    ownerName       String // owner (business) or the worker's own name (individual)
+    teamSize        Int? // business only
+    trade           String
+    yearsExperience Int?
+    area            String
+    about           String?
+    phone           String
+    altPhone        String?
+    email           String?
+    messenger       String?
+    address         String? // business only
+    emergency       Boolean @default(false)
+
+    rateMin  Int? // labor fee in PHP
+    rateMax  Int?
+    rateUnit RateUnit?
+
+    schedule ProDay[]
+    licenses License[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([trade])
+    @@index([area])
+}
+
+model ProDay {
+    id        String  @id @default(cuid())
+    proId     String
+    pro       Pro     @relation(fields: [proId], references: [id], onDelete: Cascade)
+    dayOfWeek Int // 0 = Monday ... 6 = Sunday
+    open      Boolean
+    fromTime  String // "HH:MM" 24h
+    toTime    String
+
+    @@unique([proId, dayOfWeek])
+}
+
+model License {
+    id       String      @id @default(cuid())
+    proId    String
+    pro      Pro         @relation(fields: [proId], references: [id], onDelete: Cascade)
+    type     LicenseType
+    title    String
+    number   String?
+    expiry   String? // "YYYY-MM"
+    verified Boolean     @default(false) // for future document verification
+
+    @@index([proId])
+}
